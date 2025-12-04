@@ -1,3 +1,5 @@
+
+
 ---
 
 ```markdown
@@ -47,7 +49,7 @@ High-quality sprites for the player, monsters, environment tiles, UI icons, and 
 
 Your project folder **must** follow this structure:
 
-"""
+
 
 WumpusProject/
 │
@@ -81,7 +83,7 @@ WumpusProject/
 ├── win.wav
 └── wumpus-cry.wav
 
-""""
+
 
 ---
 
@@ -158,6 +160,3 @@ You may replace any file inside the `assets/` folder with your own custom images
 
 ---
 
-
-Just tell me!
-```
