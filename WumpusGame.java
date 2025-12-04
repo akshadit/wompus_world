@@ -12,7 +12,6 @@ public class WumpusGame extends JFrame {
     private static final int GRID_SIZE = 4;
     private static final int TILE_SIZE = 100;
     private static final int WINDOW_WIDTH = GRID_SIZE * TILE_SIZE;
-    private static final int WINDOW_HEIGHT = (GRID_SIZE * TILE_SIZE) + 160;
 
     // --- GAME STATE ---
     private Cell[][] grid;
