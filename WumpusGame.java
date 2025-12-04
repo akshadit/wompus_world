@@ -8,12 +8,10 @@ import javax.sound.sampled.*;
 
 public class WumpusGame extends JFrame {
 
-    // --- CONFIGURATION ---
     private static final int GRID_SIZE = 4;
     private static final int TILE_SIZE = 100;
     private static final int WINDOW_WIDTH = GRID_SIZE * TILE_SIZE;
 
-    // --- GAME STATE ---
     private Cell[][] grid;
     private int playerRow, playerCol;
     private String playerDir = "DOWN";
@@ -21,15 +19,12 @@ public class WumpusGame extends JFrame {
     private boolean playerHasGold;
     private int arrows = 1;
 
-    // --- ASSETS ---
     private Image imgPlayerUp, imgPlayerDown, imgPlayerLeft, imgPlayerRight;
     private Image imgWall, imgFloor, imgFloorGold, imgPit, imgWumpus, imgGold;
     private Image imgGameOver, imgControls, imgArrowIcon, imgScoreIcon;
 
-    // --- AUDIO ---
-    private Clip musicClip; // To control background music
+    private Clip musicClip;
 
-    // --- UI COMPONENTS ---
     private GamePanel gamePanel;
     private JLabel statusLabel;
 
@@ -41,7 +36,6 @@ public class WumpusGame extends JFrame {
 
         loadAssets();
 
-        // UI Setup
         gamePanel = new GamePanel();
         gamePanel.setPreferredSize(new Dimension(WINDOW_WIDTH, GRID_SIZE * TILE_SIZE));
         add(gamePanel, BorderLayout.CENTER);
@@ -90,7 +84,7 @@ public class WumpusGame extends JFrame {
             imgPit = loadImage("assets/images/hole.png");
             imgWumpus = loadImage("assets/images/wumpus.png");
             imgGold = loadImage("assets/images/gold.png");
-            imgGameOver = loadImage("assets/images/game_over.png");
+            imgGameOver = loadImage("assets/images/game_over.jpg");
             imgControls = loadImage("assets/images/controls.png");
             imgArrowIcon = loadImage("assets/images/arrow-icon.png");
             imgScoreIcon = loadImage("assets/images/score-icon.png");
@@ -126,7 +120,6 @@ public class WumpusGame extends JFrame {
         placeHazards();
         updateStatus("Sensors: Safe");
 
-        // Start Background Music
         playMusic("assets/audio/background.wav");
     }
 
@@ -134,7 +127,6 @@ public class WumpusGame extends JFrame {
         placeItem("Wumpus");
         placeItem("Gold");
 
-        // Determine number of pits (2 or 3)
         int numPits = 2 + (int) (Math.random() * 2);
         int pitsPlaced = 0;
 
@@ -142,10 +134,8 @@ public class WumpusGame extends JFrame {
             int r = (int) (Math.random() * GRID_SIZE);
             int c = (int) (Math.random() * GRID_SIZE);
 
-            // Conditions: Not start, not Wumpus, not Gold, not already a pit
             if ((r == GRID_SIZE - 1 && c == 0))
                 continue;
-            // IMPORTANT: We still ensure Pits do not overlap with Gold or Wumpus
             if (grid[r][c].hasWumpus || grid[r][c].hasGold || grid[r][c].hasPit)
                 continue;
 
@@ -159,8 +149,6 @@ public class WumpusGame extends JFrame {
         do {
             r = (int) (Math.random() * GRID_SIZE);
             c = (int) (Math.random() * GRID_SIZE);
-            // CHANGED: We now allow Wumpus and Gold to potentially overlap (Randomly)
-            // We only ensure they don't spawn on the player start position.
         } while (r == GRID_SIZE - 1 && c == 0);
 
         if (type.equals("Wumpus"))
@@ -181,7 +169,6 @@ public class WumpusGame extends JFrame {
         boolean actionSoundPlayed = false;
         boolean attemptedMove = false;
 
-        // Tactical Movement logic
         if (key == KeyEvent.VK_UP) {
             if (playerDir.equals("UP")) {
                 actionSoundPlayed = movePlayer(-1, 0);
@@ -216,15 +203,9 @@ public class WumpusGame extends JFrame {
             }
         } else if (key == KeyEvent.VK_SPACE) {
             shootArrow();
-            // Shoot arrow plays its own sound always, we don't need click overlap logic
-            // here
-            // because clicks are only for movement keys.
             return;
         }
 
-        // Only play click if we ATTEMPTED to move and no other significant sound (bump,
-        // coin, die, win) was played
-        // Turning (attemptedMove == false) will stay silent
         if (attemptedMove && !actionSoundPlayed) {
             playSound("assets/audio/click.wav");
         }
@@ -235,19 +216,16 @@ public class WumpusGame extends JFrame {
         int nc = playerCol + dc;
 
         if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE) {
-            // Valid Move
             playerRow = nr;
             playerCol = nc;
             grid[playerRow][playerCol].visited = true;
 
-            // Check hazards and capture if any sound was played there
             boolean hazardSound = checkHazards();
             gamePanel.repaint();
             return hazardSound;
         } else {
-            // Invalid Move (Hit Wall)
             playSound("assets/audio/bump.wav");
-            return true; // We played a sound
+            return true;
         }
     }
 
@@ -255,7 +233,7 @@ public class WumpusGame extends JFrame {
         if (arrows > 0) {
             arrows--;
 
-            playSound("assets/audio/arrow.wav"); // Play shoot sound
+            playSound("assets/audio/arrow.wav");
 
             int targetR = playerRow;
             int targetC = playerCol;
@@ -278,12 +256,17 @@ public class WumpusGame extends JFrame {
             }
 
             if (hit) {
+                playSound("assets/audio/wumpus-cry.wav");
+
                 updateStatus("TARGET ELIMINATED! Now find the Gold!");
 
                 if (playerHasGold) {
                     victory = true;
                     stopMusic();
-                    playSound("assets/audio/win.wav");
+                    Timer winTimer = new Timer(1000, e -> playSound("assets/audio/win.wav"));
+                    winTimer.setRepeats(false);
+                    winTimer.start();
+
                     updateStatus("MISSION COMPLETE! Wumpus dead & Gold secured!");
                 }
             } else {
@@ -298,14 +281,12 @@ public class WumpusGame extends JFrame {
         String status = "";
         boolean soundPlayed = false;
 
-        // 1. Pick up Gold
         if (c.hasGold && !playerHasGold) {
             playerHasGold = true;
-            playSound("assets/audio/coin.wav"); // Play Coin Sound
+            playSound("assets/audio/coin.wav");
             soundPlayed = true;
         }
 
-        // 2. Check for Instant Death
         if (c.hasPit) {
             gameOver = true;
             status = "GAME OVER! You fell in a pit.";
@@ -320,7 +301,6 @@ public class WumpusGame extends JFrame {
             soundPlayed = true;
         }
 
-        // 3. Check for Victory
         else if (playerHasGold && !wumpusAlive) {
             victory = true;
             status = "MISSION COMPLETE! Gold found & Wumpus dead!";
@@ -329,7 +309,6 @@ public class WumpusGame extends JFrame {
             soundPlayed = true;
         }
 
-        // 4. Update Status Text
         else {
             status = "Sensors: ";
             boolean nearPit = checkNeighbor(playerRow, playerCol, "Pit");
@@ -379,9 +358,6 @@ public class WumpusGame extends JFrame {
         }
     }
 
-    // --- AUDIO SYSTEM ---
-
-    // For sound effects (One-shot)
     public void playSound(String filepath) {
         try {
             File soundFile = new File(filepath);
@@ -392,13 +368,11 @@ public class WumpusGame extends JFrame {
             clip.open(audioIn);
             clip.start();
         } catch (Exception e) {
-            // System.out.println("Audio Error: " + e.getMessage());
         }
     }
 
-    // For background music (Looping)
     public void playMusic(String filepath) {
-        stopMusic(); // Stop any existing music first
+        stopMusic();
         try {
             File soundFile = new File(filepath);
             if (!soundFile.exists()) {
@@ -408,10 +382,10 @@ public class WumpusGame extends JFrame {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
             musicClip = AudioSystem.getClip();
             musicClip.open(audioIn);
-            musicClip.loop(Clip.LOOP_CONTINUOUSLY); // Loop forever
+            musicClip.loop(Clip.LOOP_CONTINUOUSLY);
             musicClip.start();
         } catch (Exception e) {
-            System.out.println("Music Error (Try converting mp3 to wav): " + e.getMessage());
+            System.out.println("Music Error: " + e.getMessage());
         }
     }
 
