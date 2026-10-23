@@ -1,162 +1,94 @@
+# 🐉 Wumpus World: Audio Edition
 
+[![Java](https://img.shields.io/badge/Java-17%2B-ED8B00?style=flat&logo=openjdk)](https://www.oracle.com/java/)
+[![GUI](https://img.shields.io/badge/GUI-Java_Swing-orange)](https://docs.oracle.com/javase/tutorial/uiswing/)
+[![Audio](https://img.shields.io/badge/Audio-Spatial_WAV_Engine-blue)](https://docs.oracle.com/javase/tutorial/sound/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
----
-
-```markdown
-# 🐉 Wumpus World: Audio Edition  
-*A tactical, graphical implementation of the classic AI problem “Hunt the Wumpus,” built in Java.*
-
-Wumpus World: Audio Edition is a fully interactive cave-exploration game featuring fog-of-war, directional movement, immersive sound design, and a complete graphical user interface. Use your senses, avoid deadly traps, and defeat the fearsome Wumpus!
+> **A tactical, graphical implementation of the classic Artificial Intelligence benchmark "Hunt the Wumpus" featuring fog-of-war, directional tank movement, and immersive spatial audio.**
 
 ---
 
 ## 🎮 Game Overview
 
-You are an explorer entering a mysterious 4×4 cave system. Your mission:
+You are an intrepid explorer entering a dangerous $4 \times 4$ subterranean cave system. Your objective:
 
-- **Find the Gold**
-- **Slay the Wumpus**
+1. 💰 **Recover the Hidden Gold**
+2. 🏹 **Slay the Dreaded Wumpus**
 
-But be careful—hidden **Pits** will kill you instantly. You must rely on sensory clues like **Breeze** and **Stench** to survive and deduce what lies ahead.
+Beware! Bottomless **Pits** will swallow you instantly, and the Wumpus lurks in the shadows. To survive and prevail, you must utilize sensory cues—such as feeling a **Breeze** or smelling a putrid **Stench**—to logically deduce the hazards in adjoining chambers.
 
 ---
 
 ## ✨ Features
 
-### 🎭 Fog of War  
-Unvisited rooms remain hidden until the player explores them.
-
-### 🧭 Tactical Movement  
-Tank-style directional movement:  
-- Press an arrow key **once** to turn.  
-- Press the **same key again** to move forward.
-
-### 🔊 Audio System  
-- Looping background music  
-- Footstep, wall bump, arrow shooting, and gold pickup sounds  
-- Special **Wumpus Cry** sound when the monster is slain
-
-### 🧠 Sensory Feedback  
-- **Breeze** → A Pit is adjacent  
-- **Stench** → The Wumpus is adjacent
-
-### 🎨 Custom Asset Management  
-High-quality sprites for the player, monsters, environment tiles, UI icons, and more.
+- 🎭 **Fog of War**: Unvisited cave chambers remain shrouded in darkness until you boldly step into them.
+- 🧭 **Tactical Movement**: Authentic tank-style navigation:
+  - Press an arrow key **once** to pivot and face that direction.
+  - Press the **same arrow key again** to step forward into the chamber.
+- 🔊 **Dynamic Audio Engine**:
+  - Atmospheric looping background cave music.
+  - Spatial audio cues: footsteps, wall collisions, arrow whooshes, coin pickups, and the terrifying **Wumpus Death Cry**.
+- 🧠 **Sensory Deduction System**:
+  - 💨 **Breeze** $\rightarrow$ Indicates a bottomless Pit is in an adjacent chamber.
+  - 🦨 **Stench** $\rightarrow$ Warns that the ravenous Wumpus is nearby.
+  - ✨ **Glitter** $\rightarrow$ You are standing directly on the chamber containing the Gold!
 
 ---
 
-## 📂 Project Structure
+## 🎯 Controls & Mechanics
 
-Your project folder **must** follow this structure:
+| Key / Action | Function |
+| :--- | :--- |
+| **Arrow Keys** (Single Tap) | Turn player to face North, South, East, or West |
+| **Arrow Keys** (Double Tap) | Advance forward into the faced room |
+| **Spacebar** | Shoot your single enchanted arrow in the direction you are facing |
+| **G** | Pick up Gold when standing on a glittering chamber |
+| **C** | Toggle on-screen Controls cheat sheet |
 
-
-
-WumpusProject/
-│
-├── WumpusGame.java          # Main game source code
-├── README.md                # This file
-│
-└── assets/                  # Resource folder
-├── images/
-│   ├── player_facing_to_up.png
-│   ├── player_facing_to_down.png
-│   ├── player_facing_to_left.png
-│   ├── player_facing_to_right.png
-│   ├── wumpus.png
-│   ├── gold.png
-│   ├── hole.png
-│   ├── floor.png
-│   ├── floor_gold.png
-│   ├── wall.png
-│   ├── game_over.jpg
-│   ├── controls.png
-│   ├── arrow-icon.png
-│   └── score-icon.png
-│
-└── audio/
-├── background.wav
-├── arrow.wav
-├── bump.wav
-├── click.wav
-├── coin.wav
-├── die.wav
-├── win.wav
-└── wumpus-cry.wav
-
-
+> ⚠️ **Note:** You carry only **one arrow**! If you shoot and miss the Wumpus, your arrow is lost forever.
 
 ---
 
-## 🚀 How to Run
+## 🏆 Victory Conditions
 
-### **Prerequisites**
-- Java Development Kit (**JDK 8+**) installed
+To achieve true victory, you must:
+1. **Retrieve the Gold** (`G` key when standing on the gold tile), **AND**
+2. **Slay the Wumpus** by shooting an arrow straight into its chamber.
 
-### **Steps**
+---
+
+## 🚀 How to Compile & Play
+
+### Prerequisites
+- **Java Development Kit (JDK)** 17 or higher
+- Working sound output
+
+### Compile & Run
 ```bash
-# 1. Navigate to the project folder
-cd WumpusProject
+# Clone the repository
+git clone https://github.com/akshadit/wompus_world.git
+cd wompus_world
 
-# 2. Compile the game
+# Compile the Java source code
 javac WumpusGame.java
 
-# 3. Run it
+# Launch the game
 java WumpusGame
-````
+```
 
 ---
 
-## 🕹️ Controls
+## 🎨 Assets & Customization
 
-| Key        | Action                                        |
-| ---------- | --------------------------------------------- |
-| Arrow Keys | Turn or move forward (tank-style movement)    |
-| Space Bar  | Shoot an arrow in the direction you're facing |
-| R          | Restart the game                              |
+The game assets are structured modularly inside the `assets/` directory:
+- `assets/audio/`: Sound effects (`arrow.wav`, `bump.wav`, `coin.wav`, `win.wav`, `game-over.wav`, `background.wav`)
+- `assets/images/`: Sprites (`floor.png`, `gold.png`, `floor_gold.png`, `arrow-icon.png`, `controls.png`)
 
----
-
-## 📜 Rules & Logic
-
-### **Movement**
-
-* Move one square at a time
-* Walking into a wall plays a **Bump** sound
-
-### **Hazards**
-
-* **Pits:** 2–3 placed randomly; stepping on one = *instant Game Over*
-* **Wumpus:** Walking into its tile is lethal—unless it was just killed
-
-### **Combat**
-
-* You have **one arrow**
-* Shooting hits the tile directly in front of you
-* If the Wumpus is there, it dies and you hear its scream
-
-### **Winning the Game**
-
-To win, you must:
-
-1. **Collect the Gold**, **AND**
-2. **Kill the Wumpus**
-
-Only then will the victory screen appear.
+You can replace any asset with your own custom artwork or sound, keeping the original filenames intact.
 
 ---
 
-## 🛠️ Customization
+## 📄 License
 
-You may replace any file inside the `assets/` folder with your own custom images or audio.
-**Important:** Keep the filenames unchanged to avoid loading errors.
-
----
-
-## 💡 Built With
-
-* **Java Swing** for GUI
-* **WAV-based audio system**
-* Classic *Hunt the Wumpus* logic reimagined in a modern tactical format
-
----
-
+Distributed under the MIT License.
